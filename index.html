@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Thumbnail Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        #thumbnailForm {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #thumbnailUrl {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #downloadButton {
+            padding: 10px;
+            background-color: #e74c3c; /* Red */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #downloadButton:hover {
+            background-color: #f39c12; /* Yellow on hover */
+        }
+
+        #thumbnailPreview {
+            margin-top: 20px;
+        }
+
+        .thumbnailOption {
+            display: inline-block;
+            margin-right: 10px;
+            color: #000; /* Black */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="thumbnailForm">
+        <h2 style="color: #333;">YouTube Thumbnail Downloader</h2>
+        <p>Enter the YouTube video URL below:</p>
+
+        <input type="text" id="thumbnailUrl" placeholder="Enter YouTube video URL">
+
+        <button id="downloadButton" onclick="downloadThumbnail()">Download Thumbnails</button>
+
+        <div id="thumbnailPreview" style="display:none;">
+            <h3 style="color: #333;">Thumbnail Preview</h3>
+            <div id="fullHDOption" class="thumbnailOption"></div>
+            <div id="mediumOption" class="thumbnailOption"></div>
+            <div id="smallOption" class="thumbnailOption"></div>
+        </div>
+    </div>
+
+    <script>
+        function downloadThumbnail() {
+            var videoUrl = document.getElementById('thumbnailUrl').value;
+
+            // Extract video ID from the URL
+            var videoId = getYouTubeVideoId(videoUrl);
+
+            if (videoId) {
+                // Show thumbnail preview section
+                document.getElementById('thumbnailPreview').style.display = 'block';
+
+                // Construct thumbnail URLs for different sizes
+                var fullHDThumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/maxresdefault.jpg';
+                var mediumThumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg';
+                var smallThumbnailUrl = 'https://img.youtube.com/vi/' + videoId + '/default.jpg';
+
+                // Display thumbnail images
+                displayThumbnail('fullHDOption', fullHDThumbnailUrl, 'Full HD Thumbnail');
+                displayThumbnail('mediumOption', mediumThumbnailUrl, 'Medium Thumbnail');
+                displayThumbnail('smallOption', smallThumbnailUrl, 'Small Thumbnail');
+            } else {
+                alert('Invalid YouTube video URL. Please enter a valid URL.');
+            }
+        }
+
+        function displayThumbnail(containerId, thumbnailUrl, label) {
+            var container = document.getElementById(containerId);
+            container.innerHTML = '<p>' + label + '</p>';
+
+            // Create thumbnail image
+            var thumbnailImage = document.createElement('img');
+            thumbnailImage.src = thumbnailUrl;
+            thumbnailImage.alt = label + ' Preview';
+            thumbnailImage.style.maxWidth = '100%';
+
+            // Create download link
+            var downloadLink = document.createElement('a');
+            downloadLink.href = thumbnailUrl;
+            downloadLink.target = '_blank';
+            downloadLink.download = 'thumbnail.jpg';
+            downloadLink.innerText = 'Download';
+
+            container.appendChild(thumbnailImage);
+            container.appendChild(document.createElement('br'));
+            container.appendChild(downloadLink);
+        }
+
+        function getYouTubeVideoId(url) {
+            var videoIdMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|.*[?&]v=|.*youtu\.be\/|.*youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=))([^"&?\/\s]{11})/);
+            
+            return videoIdMatch && videoIdMatch[1];
+        }
+    </script>
+
+</body>
+</html>
+
